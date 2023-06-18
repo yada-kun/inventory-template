@@ -7,6 +7,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use ProductService;
 
 class ProductController extends Controller
 {
@@ -25,7 +26,6 @@ class ProductController extends Controller
     {
         // saves and validates the data
         $newProduct = Product::create($request->validated());
-
         return ProductResource::make($newProduct);
 
     }
