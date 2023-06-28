@@ -42,4 +42,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function personalAccessTokens()
+    {
+        return $this->hasMany(\Laravel\Sanctum\PersonalAccessToken::class);
+    }
 }
