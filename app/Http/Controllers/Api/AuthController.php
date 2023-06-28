@@ -13,6 +13,7 @@ use App\Traits\HttpResponses;
 use App\Utilities\HttpStatusCodes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -31,10 +32,11 @@ class AuthController extends Controller
 
         $result = $this->authService->login($request->validated(), $refreshTokenCookie);
 
+        // if there are errors returns the error
         if (isset($result['error'])) {
             return $this->error($result['error'], HttpStatusCodes::HTTP_UNAUTHORIZED);
         }
-
+        
         return $this->success(AuthResource::make($result), "Authentication successful", HttpStatusCodes::HTTP_OK)
             ->withCookie($result['cookie']);
     }
@@ -46,22 +48,27 @@ class AuthController extends Controller
         return $this->success(AuthRegisterResource::make($user), 'User has been registered successfully', HttpStatusCodes::HTTP_OK);
     }
 
-    public function refreshToken(Request $request)
+    public function refresh(Request $request)
     {
         $refreshTokenCookie = $request->cookie('refresh_token');
 
-        $result = $this->authService->checkCookie($refreshTokenCookie);
+        $result = $this->authService->refresh($refreshTokenCookie);
 
         if (isset($result['error'])) {
-            return $this->error($result['error'], HttpStatusCodes::HTTP_UNAUTHORIZED);
+            return $this->error($result['error'], HttpStatusCodes::HTTP_UNAUTHORIZED)->withCookie(cookie()->forget('refresh_token'));
         }
+        
+        return $this->success(AuthResource::make($result), "Authentication successful", HttpStatusCodes::HTTP_OK)
+        ->withCookie($result['cookie']);
 
-        return response()->json(['error' => 'Token has expired. Please sign in again.'])
-            ->cookie(cookie()->forget('refresh_token'));
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        // Implement your logout logic here
+     
+     
+   
+
+
     }
 }
