@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ManufacturerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +22,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('products', ProductController::class);
+
+// migration database name "categories"
+Route::apiResource('categories', CategoryController::class);
+
+// migration database name  "manufacturers"
+Route::apiResource('manufacturers', ManufacturerController::class);
+
